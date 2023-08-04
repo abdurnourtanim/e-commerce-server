@@ -6,7 +6,7 @@ const data = {
       password: "abdurnourtanim",
       phone: "2392329393",
       address: "Chattogram,Bangladesh",
-      isAdmin: true,
+      isAdmin: false,
     },
     {
       name: "Abdul Kader",
