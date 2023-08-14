@@ -3,6 +3,33 @@ const User = require("../models/userModel");
 const createError = require("http-errors");
 const { findWithId } = require("../services/findItem");
 const { deleteImage } = require("../helper/deleteImage");
+const { createJWT } = require("../helper/jwt");
+const { jwtActivationKey } = require("../secret");
+
+//  process register
+const userRegister = async (req, res, next) => {
+  try {
+    const { name, email, password, phone, address } = req.body;
+
+    const userExists = await User.exists({ email });
+    if (userExists) {
+      throw createError(
+        409,
+        "User with this email already exits. Please login."
+      );
+    }
+
+    const token = createJWT({}, jwtActivationKey, "10m");
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "User was register successfull.",
+      payload: { token },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getUsers = async (req, res, next) => {
   try {
@@ -86,4 +113,4 @@ const deleteUserById = async (req, res, next) => {
   }
 };
 
-module.exports = { getUsers, getUserById, deleteUserById };
+module.exports = { userRegister, getUsers, getUserById, deleteUserById };
